@@ -9,14 +9,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
-	
+
 	class Stripe_Checkout_Shortcodes {
-		
+
 		// class instance variable
 		private static $instance = null;
 
 		private static $sc_id = null;
-		
+
 		/*
 		 * class constructor
 		 */
@@ -26,37 +26,39 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 
 			// Add the shortcode functionality
 			add_shortcode( 'stripe', array( $this, 'stripe_shortcode' ) );
-			
+
 			add_shortcode( 'stripe_total', array( $this, 'stripe_total' ) );
-			
+
 			add_shortcode( 'stripe_coupon', array( $this, 'stripe_coupon' ) );
-			
+
 			add_shortcode( 'stripe_text', array( $this, 'stripe_text' ) );
-			
+
 			add_shortcode( 'stripe_date', array( $this, 'stripe_date' ) );
-			
+
 			add_shortcode( 'stripe_checkbox', array( $this, 'stripe_checkbox' ) );
-			
+
 			add_shortcode( 'stripe_number', array( $this, 'stripe_number' ) );
-			
+
 			add_shortcode( 'stripe_amount', array( $this, 'stripe_amount' ) );
-			
+
 			add_shortcode( 'stripe_dropdown', array( $this, 'stripe_dropdown' ) );
-			
+
 			add_shortcode( 'stripe_radio', array( $this, 'stripe_radio' ) );
+
+			add_shortcode( 'stripe_wrap', array( $this, 'stripe_wrap' ) );
 		}
-		
+
 		/**
 		 * Function to process the [stripe] shortcode
-		 * 
+		 *
 		 * @since 2.0.0
 		 */
 	   function stripe_shortcode( $attr, $content = null ) {
 
 		   global $sc_options, $sc_script_options, $script_vars;
-		  
+
 		   //static $sc_id = 0;
-		   
+
 		   // Increment static uid counter
 		   self::$sc_id++;
 
@@ -88,8 +90,8 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 						   'live_secret_key'           => '',
 						   'live_publishable_key'      => '',
 					   ), $attr, 'stripe' );
-		   
-		   
+
+
 		   $name                      = $attr['name'];
 		   $description               = $attr['description'];
 		   $amount                    = $attr['amount'];
@@ -116,23 +118,23 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 		   $test_publishable_key      = $attr['test_publishable_key'];
 		   $live_secret_key           = $attr['live_secret_key'];
 		   $live_publishable_key      = $attr['live_publishable_key'];
-		   
+
 		   // Remove these first to avoid issues if there were keys set in the past but now there are not.
 		   $sc_options->delete_setting( 'live_secret_key_temp' );
 		   $sc_options->delete_setting( 'test_secret_key_temp' );
-		   
+
 		   if ( ! empty( $test_secret_key ) ) {
 			   $sc_options->add_setting( 'test_secret_key_temp', $test_secret_key );
 		   }
-		   
+
 		   if ( ! empty( $test_publishable_key ) ) {
 			   $sc_options->add_setting( 'test_publishable_key_temp', $test_publishable_key );
 		   }
-		   
+
 		   if ( ! empty( $live_secret_key ) ) {
 			   $sc_options->add_setting( 'live_secret_key_temp', $live_secret_key );
 		   }
-		   
+
 		   if ( ! empty( $live_publishable_key ) ) {
 			   $sc_options->add_setting( 'live_publishable_key_temp', $live_publishable_key );
 		   }
@@ -158,7 +160,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 			   } else {
 				   $data_key = ( null !== $sc_options->get_setting_value( 'test_publish_key' ) ? $sc_options->get_setting_value( 'test_publish_key' ) : '' );
 			   }
-			   
+
 			   if ( null === $sc_options->get_setting_value( 'test_secret_key' ) && null === $sc_options->get_setting_value( 'test_publishable_key_temp' ) ) {
 				   $data_key = '';
 			   }
@@ -170,7 +172,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 			   } else {
 				   $data_key = ( null !== $sc_options->get_setting_value( 'live_publish_key' ) ? $sc_options->get_setting_value( 'live_publish_key' ) : '' );
 			   }
-			   
+
 			   if ( null === $sc_options->get_setting_value( 'live_secret_key' ) && null === $sc_options->get_setting_value( 'live_publishable_key_temp' ) ) {
 				   $data_key = '';
 			   }
@@ -188,7 +190,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 			   // Get current logged in user email
 			   if ( is_user_logged_in() ) {
 				   $prefill_email = get_userdata( get_current_user_id() )->user_email;
-			   } else { 
+			   } else {
 				   $prefill_email = 'false';
 			   }
 		   }
@@ -201,7 +203,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 			   'data-parsley-validate>';
 
 		   // Save all of our options to an array so others can run them through a filter if they need to
-		   $sc_script_options = array( 
+		   $sc_script_options = array(
 			   'script' => array(
 				   'key'                  => $data_key,
 				   'name'                 => html_entity_decode( $name ),
@@ -255,7 +257,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 			   		'invalid_html_string' => __( 'This button has been disable because the form is not well-formed HTML. Please check your shortcode source code to make sure nothing is conflicting.', 'stripe' ),
 			   		'setupFee'            => ( ! empty( $sc_script_options['script']['setupFee'] ) ? $sc_script_options['script']['setupFee'] : 0 ),
 		   );
-		   
+
 		   // Check if the current user is an admin and add a script variable we can use to check this
 		   if ( current_user_can( 'manage_options' ) ) {
 			   $script_vars[ self::$sc_id ]['is_admin'] = true;
@@ -267,7 +269,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 		   $success_redirect_url = $sc_script_options['other']['success-redirect-url'];
 		   $failure_redirect_url = $sc_script_options['other']['failure-redirect-url'];
 		   $currency             = $sc_script_options['script']['currency'];
-		   
+
 		   $html .= '<input type="hidden" name="sc-name" value="' . esc_attr( $name ) . '" />';
 		   $html .= '<input type="hidden" name="sc-description" value="' . esc_attr( $description ) . '" />';
 		   $html .= '<input type="hidden" name="sc-amount" class="sc_amount" value="" />';
@@ -281,7 +283,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 		   $html .= wp_nonce_field( 'charge_card', 'wp-simple-pay-pro-nonce', '', false );
 
 		   if ( $test_mode == 'true' ) {
-			   $html .= '<input type="hidden" name="sc_test_mode" value="true" />'; 
+			   $html .= '<input type="hidden" name="sc_test_mode" value="true" />';
 		   }
 
 		   // Add shipping information fields if it is enabled
@@ -322,22 +324,38 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 
 		   // Also check 'sub_id' here for trials subscriptions that don't pass 'charge'
 		   if ( ( ! isset( $_GET['charge'] ) && ! isset( $_GET['error_code'] ) && ! isset( $_GET['sub_id'] ) ) ||
-				   ( ( ! ( null === $sc_options->get_setting_value( 'success_redirect_url' ) ) || ! ( null === $sc_options->get_setting_value( 'failure_redirect_url' ) ) ) &&  
+				   ( ( ! ( null === $sc_options->get_setting_value( 'success_redirect_url' ) ) || ! ( null === $sc_options->get_setting_value( 'failure_redirect_url' ) ) ) &&
 				   ( ( $referer !== false && $success_redirect_url != $referer ) && ( $referer !== false && $failure_redirect_url != $referer ) ) )  && ! isset( $_GET['test_mode'] ) )  {
-			   
+
 			   return $html;
 		   }
-		   
+
 		   return '';
 	   }
-	   
-	   /**
+
+		 /**
+			* Wrap content into divs [stripe_wrap]
+			*
+			* @author HACKIFESTO
+			*/
+		 function stripe_wrap($attr, $content = null) {
+			 $attr = shortcode_atts( array(
+ 							'class'          => ''
+ 						), $attr, 'stripe_wrap' );
+
+			 $add_class = $attr['class'];
+			 $html = '';
+			 $html .= do_shortcode($content);
+			 return '<div class="sc-step ' . $add_class . '">' . $html . '</div>';
+		 }
+
+	  /**
 		* Function to process [stripe_total] shortcode
-		* 
+		*
 		* @since 2.0.0
 		*/
 	   function stripe_total( $attr ) {
-	
+
 			global $sc_options, $sc_script_options;
 
 			static $counter = 1;
@@ -345,7 +363,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 			$attr = shortcode_atts( array(
 							'label' => ( ! null === $sc_options->get_setting_value( 'stripe_total_label' ) ? $sc_options->get_setting_value( 'stripe_total_label' ) : __( 'Total Amount:', 'stripe' ) )
 						), $attr, 'stripe_total' );
-			
+
 			$label = $attr['label'];
 
 			Shortcode_Tracker::add_new_shortcode( 'stripe_total_' . $counter, 'stripe_total', $attr, false );
@@ -378,10 +396,11 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 
 			return '<div class="' . apply_filters( 'sc_form_group_class' , 'sc-form-group' ) . '">' . apply_filters( 'sc_stripe_total', $html, $args ) . '</div>';
 		}
-		
+
+
 		/**
 		 * Render code for [stripe_coupon]
-		 * 
+		 *
 		 * @since 2.0.0
 		 */
 		function stripe_coupon( $attr ) {
@@ -404,11 +423,11 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 				'placeholder'        => '',
 				'apply_button_style' => ( ! ( null === $sc_options->get_setting_value( 'sc_coup_apply_button_style' ) ) && $sc_options->get_setting_value( 'sc_coup_apply_button_style' ) == 'stripe' ? 'stripe' : '' )
 			), $attr, 'stripe_coupon' );
-			
+
 			$label              = $attr['label'];
 			$placeholder        = $attr['placeholder'];
 			$apply_button_style = $attr['apply_button_style'];
-			
+
 			Shortcode_Tracker::add_new_shortcode( 'stripe_coupon_' . $counter, 'stripe_coupon', $attr, false );
 
 			$html = ( ! empty( $label ) ? '<label for="sc-coup-coupon-' . $counter . '">' . $label . '</label>' : '' );
@@ -444,14 +463,14 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 
 			return '<div class="' . apply_filters( 'sc_form_group_class' , 'sc-form-group' ) . '">' . apply_filters( 'sc_stripe_coupon', $html, $args ) . '</div>';
 		}
-		
+
 		/**
 		 * Shortcode to output a custom text field [stripe_text]
-		 * 
+		 *
 		 * @since 2.0.0
 		 */
 		function stripe_text( $attr ) {
-	
+
 			static $counter = 1;
 
 			$attr = shortcode_atts( array(
@@ -464,7 +483,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 							'rows'        => '5',
 							'is_quantity' => 'false'
 						), $attr, 'stripe_text' );
-			
+
 			$id          = $attr['id'];
 			$label       = $attr['label'];
 			$placeholder = $attr['placeholder'];
@@ -505,14 +524,14 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 
 			return '<div class="' . apply_filters( 'sc_form_group_class' , 'sc-form-group' ) . '">' . apply_filters( 'sc_stripe_text', $html, $args ) . '</div>';
 		}
-		
+
 		/**
 		 * Shortcode to output a date field - [stripe_date]
-		 * 
+		 *
 		 * @since 2.0.0
 		 */
 		function stripe_date( $attr ) {
-	
+
 			static $counter = 1;
 
 			$attr = shortcode_atts( array(
@@ -522,7 +541,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 							'required'    => 'false',
 							'default'     => ''
 						), $attr, 'stripe_date' );
-			
+
 			$id          = $attr['id'];
 			$label       = $attr['label'];
 			$placeholder = $attr['placeholder'];
@@ -554,14 +573,14 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 
 			return '<div class="' . apply_filters( 'sc_form_group_class' , 'sc-form-group' ) . '">' . apply_filters( 'sc_stripe_date', $html, $args ) . '</div>';
 		}
-	   
+
 		/**
 		 * Shortcode to output a checkbox - [stripe_checkbox]
-		 * 
+		 *
 		 * @since 2.0.0
 		 */
 		function stripe_checkbox( $attr ) {
-	
+
 			static $counter = 1;
 
 			$attr = shortcode_atts( array(
@@ -571,7 +590,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 							'sub_toggle' => 'false',
 							'default'    => 'false'
 						), $attr, 'stripe_date' );
-			
+
 			$id         = $attr['id'];
 			$label      = $attr['label'];
 			$required   = $attr['required'];
@@ -609,7 +628,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 			// Hidden field to hold a value to pass to Stripe payment record.
 			$html .= '<input type="hidden" id="' . esc_attr( $id ) . '_hidden" class="sc-cf-checkbox-hidden" name="sc_form_field[' .
 					esc_attr( $id ) . ']" value="' . ( 'true' === $default || 'checked' === $default ? 'Yes' : 'No' ) . '">';
-			
+
 			// Custom validation errors container for checkbox fields.
 			// Needs counter ID specificity to match input above.
 			$html .= '<div id="sc_cf_checkbox_error_' . $counter . '"></div>';
@@ -622,10 +641,10 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 
 			return '<div class="' . apply_filters( 'sc_form_group_class' , 'sc-form-group' ) . '">' . apply_filters( 'sc_stripe_checkbox', $html, $args ) . '</div>';
 		}
-		
+
 		/**
 		 * Shortcode to output a number box - [stripe_number]
-		 * 
+		 *
 		 * @since 2.0.0
 		 */
 		function stripe_number( $attr ) {
@@ -643,7 +662,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 							'step'        => '',
 							'is_quantity' => 'false'
 						), $attr, 'stripe_date' );
-			
+
 			$id          = $attr['id'];
 			$label       = $attr['label'];
 			$required    = $attr['required'];
@@ -685,10 +704,10 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 
 			return '<div class="' . apply_filters( 'sc_form_group_class' , 'sc-form-group' ) . '">' . apply_filters( 'sc_stripe_number', $html, $args ) . '</div>';
 		}
-		
+
 		/**
 		 * Function to add the custom user amount textbox via shortcode - [stripe_amount]
-		 * 
+		 *
 		 * @since 2.0.0
 		 */
 		function stripe_amount( $attr ) {
@@ -701,7 +720,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 							'placeholder' => '',
 							'default'     => ''
 						), $attr, 'stripe_amount' );
-						
+
 			$label       = $attr['label'];
 			$placeholder = $attr['placeholder'];
 			$default     = $attr['default'];
@@ -788,14 +807,14 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 
 			return '';
 		}
-		
+
 		/**
 		 * Shortcode to output a dropdown list - [stripe_dropdown]
-		 * 
+		 *
 		 * @since 2.0.0
 		 */
 		function stripe_dropdown( $attr ) {
-	
+
 			static $counter = 1;
 
 			global $sc_script_options;
@@ -900,14 +919,14 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 
 			return '<div class="' . apply_filters( 'sc_form_group_class' , 'sc-form-group' ) . '">' . apply_filters( 'sc_stripe_dropdown', $html, $args ) . '</div>';
 		}
-		
+
 		/**
 		 * Shortcode to output a number box - [stripe_radio]
-		 * 
+		 *
 		 * @since 2.0.0
 		 */
 		function stripe_radio( $attr ) {
-	
+
 			static $counter = 1;
 
 			global $sc_script_options;
@@ -921,7 +940,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 							'amounts'     => '',
 							'is_amount'   => 'false'  // For backwards compatibility
 						), $attr, 'stripe_radio' );
-			
+
 			$id          = $attr['id'];
 			$label       = $attr['label'];
 			$default     = $attr['default'];
@@ -1000,7 +1019,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 				// Don't use built-in checked() function here for now since we need "checked" in double quotes.
 				$html .= '<label title="' . esc_attr( $option ) . '">';
 				$html .= '<input type="radio" name="sc_form_field[' . esc_attr( $id ) . ']" value="' . ( isset( $option_name ) ? $option_name : $option ) . '" ' .
-						'data-sc-price="' . esc_attr( $value ) . '" ' . ( $default == $option ? 'checked="checked"' : '' ) . 
+						'data-sc-price="' . esc_attr( $value ) . '" ' . ( $default == $option ? 'checked="checked"' : '' ) .
 						' class="' . esc_attr( $id ) . '_' . $i . $quantity_class . $amount_class . '" data-parsley-errors-container=".' . apply_filters( 'sc_form_group_class' , 'sc-form-group' ) . '" ' . $quantity_html . '>';
 				$html .= '<span>' . ( isset( $option_name ) ? $option_name : $option ) . '</span>';
 				$html .= '</label>';
@@ -1020,10 +1039,10 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 
 			return '<div class="' . apply_filters( 'sc_form_group_class' , 'sc-form-group' ) . '">' . apply_filters( 'sc_stripe_radio', $html, $args ) . '</div>';
 		}
-		
+
 		/*
 		 * Calculates number of total fields added and returns a message if it is greater than the limit
-		 * 
+		 *
 		 * @since 2.0.8
 		 */
 		public function total_fields( $reset = false ) {
@@ -1046,12 +1065,12 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 				}
 			}
 		}
-		
+
 		/**
 		 * Function to set the id of the args array and return the modified array
 		 */
 		public function get_args( $id = '', $args = array(), $counter = '' ) {
-	
+
 			if ( ! empty( $id ) ) {
 				$args['id'] = $id;
 			}
@@ -1069,7 +1088,7 @@ if ( ! class_exists( 'Stripe_Checkout_Shortcodes' ) ) {
 		public static function get_sc_id() {
 			return self::$sc_id;
 		}
-		
+
 	    /**
 		 * Return an instance of this class.
 		 *

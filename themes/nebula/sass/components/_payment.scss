@@ -10,6 +10,18 @@
   }
 }
 
+.sc-step {
+  display: none;
+}
+
+.sc-payment-btn.stripe-button-el {
+  display: none;
+}
+
+.sc-step.step-show {
+  display: block;
+}
+
 .sc-cf-checkbox {
   vertical-align: 8%;
 }
