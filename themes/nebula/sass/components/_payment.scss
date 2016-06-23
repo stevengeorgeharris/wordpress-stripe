@@ -1,0 +1,43 @@
+.c-payment-form {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  form label {
+    color: #fff;
+    font-weight: $font-light;
+  }
+}
+
+.sc-cf-checkbox {
+  vertical-align: 8%;
+}
+
+.sc-cf-dropdown {
+  margin: 0 auto;
+}
+
+.sc-uea-currency {
+  color: #fff;
+  padding-left: .5em;
+  font-weight: $font-light;
+}
+
+.c-payment-form__title {
+  font-size: 2em;
+  font-weight: $font-thin;
+  color: #fff;
+  padding-bottom: .5em;
+}
+
+.c-payment-form__sub-title {
+  font-size: 1.5em;
+  font-weight: $font-thin;
+  padding-bottom: 1em;
+  color: #fff;
+}
+
+.c-payment-inner {
+  text-align: center;
+}
