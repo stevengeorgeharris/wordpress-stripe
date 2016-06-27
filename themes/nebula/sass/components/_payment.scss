@@ -3,6 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 
   form label {
     color: #fff;
@@ -11,15 +12,76 @@
 }
 
 .sc-step {
+  transition: all 400ms ease-in;
+  width: 100%;
+  // position: absolute;
+  top: 0;
+  opacity: 0;
+  padding: 0;
   display: none;
+  //background: rgba(0,0,0,0.6);
+  // transform: translateX(300%);
+  p {
+    color: #fff;
+    font-weight: $font-thin;
+  }
 }
 
-.sc-payment-btn.stripe-button-el {
-  display: none;
+.sc-uea-container {
+  text-align: left !important;
+}
+
+.sc-form-group .sc-form-control {
+  border-radius: 0 !important;
+  width: 75% !important;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-300%);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(300%);
+  }
+}
+
+@keyframes show {
+  0% {
+    display: block;
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes hide {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    display: none;
+  }
 }
 
 .sc-step.step-show {
   display: block;
+  opacity: 1;
+  animation: show 1s ease;
+}
+
+.sc-step.step-leave {
+  animation: hide 1s ease;
+  opacity: 0;
+}
+
+.sc-payment-btn.stripe-button-el {
+  display: none;
 }
 
 .sc-cf-checkbox {
@@ -30,9 +92,56 @@
   margin: 0 auto;
 }
 
-.sc-uea-currency {
+.sc-checkout-form {
+}
+
+.sc-checkout-form,
+.sc-form-group {
+  position: relative;
+  margin-bottom: 0 !important;
+}
+
+.sc-step__button {
+  cursor: pointer;
   color: #fff;
-  padding-left: .5em;
+  transition: all 200ms ease;
+
+  &:hover {
+    background: #D02F4A;
+  }
+
+  &--full {
+    width: 100%;
+  }
+
+  &--half {
+    width: 50%;
+  }
+
+  background: $manifesto-red;
+  padding: 1em 1.5em;
+}
+
+.sc-step__button--next {
+  display: none;
+}
+
+.sc-uea-custom-amount {
+  height: 53px;
+  border: 0 !important;
+}
+
+.sc-uea-currency {
+  display: inline-block;
+  margin-left: -4px;
+  width: 25%;
+  text-align: center;
+  padding-top: 12px;
+  vertical-align: top;
+  color: #fff;
+  background: #369FF4;
+  height: 53px;
+  font-size: 1.3em;
   font-weight: $font-light;
 }
 
@@ -52,4 +161,5 @@
 
 .c-payment-inner {
   text-align: center;
+  max-width: 400px;
 }

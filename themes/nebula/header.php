@@ -16,4 +16,9 @@
 
 <?php wp_head(); ?>
 
-<body>
+<body <?php body_class(); ?>>
+  <div class="c-header">
+    <div class="c-logo">
+      <img src="<?php the_field('site_logo') ?>"/>
+    </div>
+  </div>

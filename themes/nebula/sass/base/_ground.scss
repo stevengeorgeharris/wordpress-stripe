@@ -4,10 +4,12 @@ body {
   margin: 0;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
-  background-image: url('/wp-content/uploads/2016/06/desert-comp.jpg');
-  background-size: cover;
-  background-position: center;
   font-family: $font;
   font-size: 16px;
+  position: relative;
 }
