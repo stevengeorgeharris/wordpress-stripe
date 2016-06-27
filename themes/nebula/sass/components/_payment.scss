@@ -15,16 +15,15 @@
   transition: all 400ms ease-in;
   width: 100%;
   // position: absolute;
+  margin-bottom: 1em;
   top: 0;
   opacity: 0;
   padding: 0;
   display: none;
   //background: rgba(0,0,0,0.6);
   // transform: translateX(300%);
-  p {
-    color: #fff;
-    font-weight: $font-thin;
-  }
+  color: #fff;
+  font-weight: $font-thin;
 }
 
 .sc-uea-container {

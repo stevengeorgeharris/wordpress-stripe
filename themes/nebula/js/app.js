@@ -26,6 +26,7 @@ scExtend.steps = {
       var current = parseInt($step.attr('data-index'));
       var $check = $('.sc-uea-custom-amount');
       var next = current + 1;
+
       if (! $check.val().length > 0) {
         return;
       }
@@ -33,10 +34,17 @@ scExtend.steps = {
       $step.addClass('step-leave');
       $step.removeClass('step-show');
 
+      if (next === total) {
+        $(button).text('Finalise Donation');
+      } else if (next !== total && next > 0) {
+        $(button).text('Next Step');
+      }
+
       if (current === total) {
         $('.sc-payment-btn').click();
         $('[data-index="' + 1 +'"]').removeClass('step-leave').addClass('step-show');
         $('[data-index="' + 2 +'"]').removeClass('step-leave');
+        $(button).text('Pay By Card');
       }
 
       $('[data-index="' + next +'"]').addClass('step-show');
