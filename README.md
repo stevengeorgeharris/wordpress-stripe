@@ -9,7 +9,7 @@ Please enter your Stripe API keys.
 
 Example form: 
 
-``[stripe billing="true"]
+```[stripe billing="true"]
  
  [stripe_wrap class="first"]
  [stripe_amount default="5" placeholder="Donation Amount"]
@@ -26,4 +26,4 @@ Example form:
  [stripe_checkbox label="Add Gift Aid" id="gift_aid" required="false"]
  [/stripe_wrap]
  
- [/stripe]``
+ [/stripe]```
