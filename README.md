@@ -5,7 +5,7 @@ The following was set up to demonstrate stripe payments in WordPress.
 We are using the wp-stripe plugin. 
 I have modified the core of the plugin to allow us to add multiple steps before checkout.
 
-Please enter your Stripe API keys.
+Please enter your Stripe API keys into the plugin for forms to work.
 
 Example form: 
 ```
