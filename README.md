@@ -8,10 +8,9 @@ I have modified the core of the plugin to allow us to add multiple steps before 
 Please enter your Stripe API keys.
 
 Example form: 
-
-```[stripe billing="true"]
- 
- [stripe_wrap class="first"]
+```
+[stripe billing="true"]
+[stripe_wrap class="first"]
  [stripe_amount default="5" placeholder="Donation Amount"]
  [/stripe_wrap]
  
@@ -26,4 +25,5 @@ Example form:
  [stripe_checkbox label="Add Gift Aid" id="gift_aid" required="false"]
  [/stripe_wrap]
  
- [/stripe]```
+ [/stripe]
+ ```
